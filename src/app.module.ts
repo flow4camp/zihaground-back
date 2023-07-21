@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ImageController } from './upload/image.controller';
 import { UserModule } from './user/user.module';
 import { SubwayRoomModule } from './subwayRoom/subwayRoom.module';
+import { SubwayModule } from './subway/subway.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SubwayRoomModule } from './subwayRoom/subwayRoom.module';
     }),
     UserModule,
     SubwayRoomModule,
+    SubwayModule,
   ],
   controllers: [AppController, ImageController],
   providers: [AppService],
