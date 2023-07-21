@@ -38,6 +38,18 @@ export class User {
   @Column({ nullable: true, type: 'integer' })
   subwayNum: number;
 
+  @ApiProperty({ type: Number, description: 'poser' })
+  @Column({ nullable: false, type: 'integer', default: 0 })
+  power: number;
+
+  @ApiProperty({ type: Number, description: 'win' })
+  @Column({ nullable: false, type: 'integer', default: 0 })
+  win: number;
+
+  @ApiProperty({ type: Number, description: 'lose' })
+  @Column({ nullable: false, type: 'integer', default: 0 })
+  lose: number;
+
   @ManyToOne(() => SubwayRoom, (room) => room.users, {
     nullable: true,
     onDelete: 'CASCADE',
