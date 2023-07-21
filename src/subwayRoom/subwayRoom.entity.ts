@@ -18,7 +18,7 @@ export class SubwayRoom {
 
   @ApiProperty({ type: String, description: 'subway number' })
   @Column({ nullable: false, type: 'integer' })
-  subwayNum: string;
+  subwayNum: number;
 
   @OneToMany(() => User, (user) => user.subwayRoom, {
     onDelete: 'CASCADE',
