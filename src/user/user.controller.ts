@@ -8,7 +8,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { UserUpdateInput, UserCreateInput } from './dto/user.input';
+import {
+  UserUpdateInput,
+  UserCreateInput,
+  UserRecordInput,
+  UserLoginInput,
+} from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -27,6 +32,12 @@ export class UserController {
     return this.userService.findByIdWithRoom(id);
   }
 
+  @Post('login')
+  @ApiBody({ type: UserLoginInput })
+  async userLogin(@Body() user: UserLoginInput): Promise<User> {
+    return this.userService.login(user);
+  }
+
   @Post()
   @ApiBody({ type: UserCreateInput })
   async create(@Body() User: UserCreateInput): Promise<User> {
@@ -40,6 +51,24 @@ export class UserController {
     @Body() User: UserUpdateInput,
   ): Promise<User> {
     return this.userService.update(id, User);
+  }
+
+  @Put('/add-power/:id')
+  @ApiBody({ type: Number })
+  async addPower(
+    @Param('id') id: number,
+    @Body() power: number,
+  ): Promise<User> {
+    return this.userService.addPower(id, power);
+  }
+
+  @Put('/add-record/:id')
+  @ApiBody({ type: UserRecordInput })
+  async addRecord(
+    @Param('id') id: number,
+    @Body() userRecord: UserRecordInput,
+  ): Promise<User> {
+    return this.userService.addRecord(id, userRecord.score, userRecord.power);
   }
 
   @Delete(':id')

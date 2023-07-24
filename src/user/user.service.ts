@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubwayRoomService } from '../subwayRoom/subwayRoom.service';
-import { UserCreateInput, UserUpdateInput } from './dto/user.input';
+import {
+  UserCreateInput,
+  UserLoginInput,
+  UserUpdateInput,
+} from './dto/user.input';
 import { User } from './user.entity';
 import e from 'express';
 
@@ -42,6 +46,19 @@ export class UserService {
     });
   }
 
+  async login(user: UserLoginInput): Promise<User> {
+    const existUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+    if (!existUser) {
+      throw new Error('User not found');
+    }
+    if (existUser.password !== user.password) {
+      throw new Error('Password is wrong');
+    }
+    return existUser;
+  }
+
   async create(userInput: UserCreateInput): Promise<User> {
     const existUser = await this.userRepository.findOne({
       where: { username: userInput.username },
@@ -76,6 +93,53 @@ export class UserService {
           throw new Error('SubwayRoom not found');
         }
         existUser.subwayRoom = subwayRoom;
+      }
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async addPower(id: number, power: number): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.power += power;
+      if (existUser.power < 0) {
+        existUser.power = 0;
+      }
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async addRecord(id: number, score: number, power: number): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      if (score === 1) {
+        existUser.win += 1;
+      } else if (score === -1) {
+        existUser.lose += 1;
+      }
+      existUser.power += power * score;
+      if (existUser.power < 0) {
+        existUser.power = 0;
       }
       await this.userRepository.update(id, existUser);
     } catch (e) {
