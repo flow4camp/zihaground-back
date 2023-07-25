@@ -25,6 +25,19 @@ export class UserUpdateInput {
   subwayRoomId: number;
 }
 
+export class UserEditInput {
+  @ApiProperty({ type: Number, description: '아이템 번호' })
+  hatVariants: number;
+  @ApiProperty({ type: Number, description: '아이템 번호' })
+  accVariants: number;
+  @ApiProperty({ type: Number, description: '아이템 번호' })
+  faceVariants: number;
+  @ApiProperty({ type: Number, description: '아이템 번호' })
+  clothesVariants: number;
+  @ApiProperty({ type: Number, description: '아이템 번호' })
+  shoeVariants: number;
+}
+
 export class UserLoginInput {
   @ApiProperty({ type: String, description: '이메일' })
   email: string;

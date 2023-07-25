@@ -13,6 +13,7 @@ import {
   UserCreateInput,
   UserRecordInput,
   UserLoginInput,
+  UserEditInput,
 } from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -51,6 +52,15 @@ export class UserController {
     @Body() User: UserUpdateInput,
   ): Promise<User> {
     return this.userService.update(id, User);
+  }
+
+  @Put('/character/:id')
+  @ApiBody({ type: UserEditInput })
+  async edit(
+    @Param('id') id: number,
+    @Body() User: UserEditInput,
+  ): Promise<User> {
+    return this.userService.edit(id, User);
   }
 
   @Put('/add-power/:id')

@@ -11,6 +11,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import item from './item.entity';
 import { ItemService } from './item.service';
 import Item from './item.entity';
+import { ItemType } from '../enum/enum';
 
 @Controller('item')
 @ApiTags('Item')
@@ -32,7 +33,7 @@ export class ItemController {
     return this.itemService.findByName(name);
   }
   @Get('type/:type')
-  async findByType(@Param('name') name: string): Promise<Item[]> {
+  async findByType(@Param('name') name: ItemType): Promise<Item[]> {
     return this.itemService.findByType(name);
   }
 

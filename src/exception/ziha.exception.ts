@@ -1,4 +1,8 @@
-import { BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 export class NotFoundCustomException extends NotFoundException {
   constructor(message?: string | object | any, error?: string) {

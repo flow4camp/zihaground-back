@@ -4,11 +4,15 @@ import { Repository } from 'typeorm';
 import { SubwayRoomService } from '../subwayRoom/subwayRoom.service';
 import {
   UserCreateInput,
+  UserEditInput,
   UserLoginInput,
   UserUpdateInput,
 } from './dto/user.input';
 import { User } from './user.entity';
-import { BadRequestCustomException, UnauthorizedCustomException } from '../exception/ziha.exception';
+import {
+  BadRequestCustomException,
+  UnauthorizedCustomException,
+} from '../exception/ziha.exception';
 
 @Injectable()
 export class UserService {
@@ -101,6 +105,28 @@ export class UserService {
           throw new Error('SubwayRoom not found');
         }
         existUser.subwayRoom = subwayRoom;
+      }
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async edit(id: number, user: UserEditInput): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      existUser.hatVariants = user.hatVariants;
+      existUser.faceVariants = user.faceVariants;
+      existUser.accVariants = user.accVariants;
+      existUser.clothesVariants = user.clothesVariants;
+      existUser.shoeVariants = user.shoeVariants;
+      if (!existUser) {
+        throw new Error('User not found');
       }
       await this.userRepository.update(id, existUser);
     } catch (e) {

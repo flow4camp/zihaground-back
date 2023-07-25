@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Buy } from '../buy/buy.entity';
+import { ItemType } from '../enum/enum';
 
 @Entity()
 export default class Item {
@@ -20,7 +21,7 @@ export default class Item {
 
   @ApiProperty({ type: String, description: 'item type' })
   @Column({ nullable: false, type: 'varchar' })
-  type: string;
+  type: ItemType;
 
   @ApiProperty({ type: Number, description: 'item price' })
   @Column({ nullable: false, type: 'integer', default: 0 })

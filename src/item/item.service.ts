@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import Item from './item.entity';
+import { ItemType } from '../enum/enum';
 
 @Injectable()
 export class ItemService {
@@ -26,7 +27,7 @@ export class ItemService {
     });
   }
 
-  async findByType(type: string): Promise<Item[]> {
+  async findByType(type: ItemType): Promise<Item[]> {
     return await this.itemRepository.find({
       where: { type: type },
     });

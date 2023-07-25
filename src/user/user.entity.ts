@@ -53,6 +53,26 @@ export class User {
   @Column({ nullable: false, type: 'integer', default: 0 })
   lose: number;
 
+  @ApiProperty({ type: Number, description: 'hatVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  hatVariants: number;
+
+  @ApiProperty({ type: Number, description: 'faceVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  faceVariants: number;
+
+  @ApiProperty({ type: Number, description: 'accVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  accVariants: number;
+
+  @ApiProperty({ type: Number, description: 'clothesVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  clothesVariants: number;
+
+  @ApiProperty({ type: Number, description: 'shoeVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  shoeVariants: number;
+
   @ManyToOne(() => SubwayRoom, (room) => room.users, {
     nullable: true,
     onDelete: 'CASCADE',
