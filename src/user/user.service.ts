@@ -8,7 +8,7 @@ import {
   UserUpdateInput,
 } from './dto/user.input';
 import { User } from './user.entity';
-import e from 'express';
+import { BadRequestCustomException, UnauthorizedCustomException } from '../exception/ziha.exception';
 
 @Injectable()
 export class UserService {
@@ -51,10 +51,10 @@ export class UserService {
       where: { email: user.email },
     });
     if (!existUser) {
-      throw new Error('User not found');
+      throw new UnauthorizedCustomException('User not found');
     }
     if (existUser.password !== user.password) {
-      throw new Error('Password is wrong');
+      throw new UnauthorizedCustomException('Password is wrong');
     }
     return existUser;
   }
@@ -63,8 +63,16 @@ export class UserService {
     const existUser = await this.userRepository.findOne({
       where: { username: userInput.username },
     });
+    const existUser2 = await this.userRepository.findOne({
+      where: { email: userInput.email },
+    });
     if (existUser) {
-      throw new Error('This token has already been added.');
+      throw new BadRequestCustomException(
+        'This username has already been added.',
+      );
+    }
+    if (existUser2) {
+      throw new BadRequestCustomException('This email has already been added.');
     }
     return await this.userRepository.save({
       createdAt: new Date(),
