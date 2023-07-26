@@ -8,11 +8,7 @@ import { User } from '../user/user.entity';
 import { BuyController } from './buy.controller';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Buy]),
-    TypeOrmModule.forFeature([Item]),
-    TypeOrmModule.forFeature([User]),
-  ],
+  imports: [TypeOrmModule.forFeature([Buy]), TypeOrmModule.forFeature([User])],
   controllers: [BuyController],
   providers: [BuyService],
   exports: [BuyService],

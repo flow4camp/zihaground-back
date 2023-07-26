@@ -34,8 +34,4 @@ export default class Item {
   @ApiProperty({ type: Number, description: 'item buy count' })
   @Column({ nullable: false, type: 'integer', default: 0 })
   count: number;
-
-  @ManyToMany(() => Buy, (buy) => buy.item)
-  @JoinTable()
-  buys: Buy[];
 }

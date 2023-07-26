@@ -13,34 +13,35 @@ export class BuyService {
     private readonly buyRepository: Repository<Buy>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Item)
-    private readonly itemRepository: Repository<Item>,
   ) {}
 
-  async createBuy(itemId: number, userId: number, quantity = 1): Promise<Buy> {
+  async createBuy(
+    itemId: number,
+    userId: number,
+    itemType: string,
+    price: number,
+    quantity = 1,
+  ): Promise<Buy> {
     const buy = new Buy();
     buy.quantity = quantity;
-
-    const item = await this.itemRepository.findOne({ where: { id: itemId } });
-    buy.item = item;
-
+    buy.itemId = itemId;
+    buy.itemType = itemType;
     const user = await this.userRepository.findOne({ where: { id: userId } });
     buy.user = user;
-
+    user.power -= price;
+    await this.userRepository.update(userId, user);
     return this.buyRepository.save(buy);
   }
 
   async getBuysByItemId(itemId: number): Promise<Buy[]> {
     return this.buyRepository.find({
-      where: { item: { id: itemId } },
-      relations: ['item', 'user'],
+      where: { itemId: itemId },
     });
   }
 
   async getBuysByUserId(userId: number): Promise<Buy[]> {
     return this.buyRepository.find({
       where: { user: { id: userId } },
-      relations: ['item', 'user'],
     });
   }
 }

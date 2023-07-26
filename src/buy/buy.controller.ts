@@ -24,7 +24,8 @@ export class BuyController {
     return this.buyService.createBuy(
       createBuyDto.itemId,
       createBuyDto.userId,
-      createBuyDto.quantity,
+      createBuyDto.itemType,
+      createBuyDto.price,
     );
   }
 }

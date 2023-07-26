@@ -5,6 +5,8 @@ export class CreateBuyDto {
   itemId: number;
   @ApiProperty({ type: Number, description: '유저 아이디' })
   userId: number;
-  @ApiProperty({ type: Number, description: '수량' })
-  quantity: number;
+  @ApiProperty({ type: Number, description: '가격' })
+  price: number;
+  @ApiProperty({ type: String, description: '아이템 타입', default: 'hat' })
+  itemType: string;
 }
