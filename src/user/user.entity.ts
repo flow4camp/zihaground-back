@@ -9,7 +9,10 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
 } from 'typeorm';
+import Item from '../item/item.entity';
+import { Buy } from '../buy/buy.entity';
 
 export enum UserType {
   user = 0,
@@ -38,7 +41,7 @@ export class User {
   @Column({ nullable: true, type: 'integer' })
   subwayNum: number;
 
-  @ApiProperty({ type: Number, description: 'poser' })
+  @ApiProperty({ type: Number, description: 'power' })
   @Column({ nullable: false, type: 'integer', default: 0 })
   power: number;
 
@@ -50,6 +53,26 @@ export class User {
   @Column({ nullable: false, type: 'integer', default: 0 })
   lose: number;
 
+  @ApiProperty({ type: Number, description: 'hatVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  hatVariants: number;
+
+  @ApiProperty({ type: Number, description: 'faceVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  faceVariants: number;
+
+  @ApiProperty({ type: Number, description: 'accVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  accVariants: number;
+
+  @ApiProperty({ type: Number, description: 'clothesVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  clothesVariants: number;
+
+  @ApiProperty({ type: Number, description: 'shoeVariants' })
+  @Column({ nullable: false, type: 'integer', default: -1 })
+  shoeVariants: number;
+
   @ManyToOne(() => SubwayRoom, (room) => room.users, {
     nullable: true,
     onDelete: 'CASCADE',
@@ -60,6 +83,9 @@ export class User {
   @ApiProperty({ type: Number, description: 'type' })
   @Column({ nullable: true, type: 'integer', default: 0 })
   type: UserType;
+
+  @ManyToMany(() => Buy, (buy) => buy.user)
+  buys: Buy[];
 
   @CreateDateColumn({ type: 'timestamp' })
   @Column({ default: null, nullable: true })
