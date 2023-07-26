@@ -12,7 +12,7 @@ import { UserService } from '../user/user.service';
 // import { ChatMessageService } from './chatMessage.service';
 
 @WebSocketGateway({
-  namespace: 'chat',
+  namespace: 'game',
   cors: true,
 })
 export class SubwayRoomGateway
@@ -70,30 +70,30 @@ export class SubwayRoomGateway
   }
 
   //연결이 끊겼을 때
-  // async handleDisconnect(client: Socket) {
-  //   const userId = client.handshake.query.userId as string;
-  //   console.log(
-  //     `[ ! disconnected ] userId :  ${userId}, clientiId : ${client.id}`,
-  //   );
-  //   //subwayRoom User 리스트에서 제거
-  //   this.subwayRoomUsers.forEach((sockets, roomId) => {
-  //     const updatedSockets = sockets.filter(
-  //       (socket) => socket.id !== client.id,
-  //     );
-  //     if (updatedSockets.length === 0) {
-  //       this.subwayRoomUsers.delete(roomId);
-  //     } else {
-  //       //같은 방 유저에게 소켓 전송
-  //       updatedSockets.forEach((socket) => {
-  //         socket.emit('user-exited ', userId);
-  //       });
-  //       this.subwayRoomUsers.set(roomId, updatedSockets);
-  //     }
-  //   });
-  //   //connected 리스트에서 제거
-  //   this.connectedUsers.delete(userId);
-  //   this.server.emit('user-disconnected', userId);
-  // }
+  async handleDisconnect(client: Socket) {
+    const userId = client.handshake.query.userId as string;
+    console.log(
+      `[ ! disconnected ] userId :  ${userId}, clientiId : ${client.id}`,
+    );
+    // //subwayRoom User 리스트에서 제거
+    // this.subwayRoomUsers.forEach((sockets, roomId) => {
+    //   const updatedSockets = sockets.filter(
+    //     (socket) => socket.id !== client.id,
+    //   );
+    //   if (updatedSockets.length === 0) {
+    //     this.subwayRoomUsers.delete(roomId);
+    //   } else {
+    //     //같은 방 유저에게 소켓 전송
+    //     updatedSockets.forEach((socket) => {
+    //       socket.emit('user-exited ', userId);
+    //     });
+    //     this.subwayRoomUsers.set(roomId, updatedSockets);
+    //   }
+    // });
+    // //connected 리스트에서 제거
+    // this.connectedUsers.delete(userId);
+    // this.server.emit('user-disconnected', userId);
+  }
 
   //------------------------[ Handle Subway Room ]-----------------------------
 
@@ -152,6 +152,9 @@ export class SubwayRoomGateway
 
   @SubscribeMessage('game-select')
   handleGameSelect(client: Socket, data: any[]) {
+    this._handleGameSelect(client, data);
+  }
+  async _handleGameSelect(client: Socket, data: any[]) {
     const userId = client.handshake.query.userId as string;
     const subwayRoomId = data[0] as string;
     const select = data[1] as number;
@@ -231,6 +234,16 @@ export class SubwayRoomGateway
         game.turn++;
         this.playingGames.set(Number(subwayRoomId), game);
       }
+    }
+    if (game.firHp === 0) {
+      game.firSocket.emit('game-over');
+      game.secSocket.emit('game-win');
+      this.playingGames.delete(Number(subwayRoomId));
+    }
+    if (game.secHp === 0) {
+      game.firSocket.emit('game-win');
+      game.secSocket.emit('game-over');
+      this.playingGames.delete(Number(subwayRoomId));
     }
   }
   //유저로부터 메세지를 받았을 때
