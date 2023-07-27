@@ -22,6 +22,9 @@ import {
   UserStation3Input,
   UserLine1Input,
   UserLine2Input,
+  UserFirsttime3Input,
+  UserSecondtime3Input,
+  UserThirdtime3Input,
 } from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -146,5 +149,27 @@ export class UserController {
     @Body() input: UserLine2Input,
   ): Promise<User> {
     return this.userService.updateLine2(id, input.subwayNum2);
+  }
+
+  @Put(':id/time1')
+  async updateTime1(
+    @Param('id') id: number,
+    @Body() input: UserFirsttime3Input,
+  ): Promise<User> {
+    return this.userService.updateTime1(id, input.firsttime);
+  }
+  @Put(':id/time2')
+  async updateTime2(
+    @Param('id') id: number,
+    @Body() input: UserSecondtime3Input,
+  ): Promise<User> {
+    return this.userService.updateTime2(id, input.secondtime);
+  }
+  @Put(':id/time3')
+  async updateTime3(
+    @Param('id') id: number,
+    @Body() input: UserThirdtime3Input,
+  ): Promise<User> {
+    return this.userService.updateTime3(id, input.thirdtime);
   }
 }

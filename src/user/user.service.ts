@@ -324,4 +324,59 @@ export class UserService {
       where: { id: id },
     });
   }
+
+  // 시간
+
+  async updateTime1(id: number, firsttime: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.firsttime = firsttime;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async updateTime2(id: number, secondtime: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.secondtime = secondtime;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+  async updateTime3(id: number, thirdtime: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.thirdtime = thirdtime;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
 }

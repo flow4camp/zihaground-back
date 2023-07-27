@@ -126,11 +126,13 @@ export class User {
   @Column({ nullable: true, type: 'varchar', default: '대전역' })
   station3: string;
 
-  @ApiProperty({ type: Date, description: 'firsttime' })
-  @Column({ type: 'timestamp', default: null, nullable: true })
-  firsttime: Date;
-
-  @ApiProperty({ type: Date, description: 'thirdtime' })
-  @Column({ type: 'timestamp', default: null, nullable: true })
-  thirdtime: Date;
+  @ApiProperty({ type: String, description: 'firsttime' })
+  @Column({ nullable: true, type: 'varchar', default: '08:00' })
+  firsttime: string;
+  @ApiProperty({ type: String, description: 'secondtime' })
+  @Column({ nullable: true, type: 'varchar', default: '08:30' })
+  secondtime: string;
+  @ApiProperty({ type: String, description: 'thirdtime' })
+  @Column({ nullable: true, type: 'varchar', default: '09:30' })
+  thirdtime: string;
 }

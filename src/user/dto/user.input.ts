@@ -79,6 +79,21 @@ export class UserLine2Input {
   subwayNum2: number;
 }
 
+// 시간
+export class UserFirsttime3Input {
+  @ApiProperty({ type: String, description: '시간1' })
+  firsttime: string;
+}
+export class UserSecondtime3Input {
+  @ApiProperty({ type: String, description: '시간2' })
+  secondtime: string;
+}
+
+export class UserThirdtime3Input {
+  @ApiProperty({ type: String, description: '시간3' })
+  thirdtime: string;
+}
+
 export class UserRecordInput {
   @ApiProperty({ type: Number, description: '전적' })
   score: number;
