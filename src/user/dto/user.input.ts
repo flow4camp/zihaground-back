@@ -69,6 +69,16 @@ export class UserStation3Input {
   station3: string;
 }
 
+export class UserLine1Input {
+  @ApiProperty({ type: Number, description: '노선1' })
+  subwayNum1: number;
+}
+
+export class UserLine2Input {
+  @ApiProperty({ type: Number, description: '노선2' })
+  subwayNum2: number;
+}
+
 export class UserRecordInput {
   @ApiProperty({ type: Number, description: '전적' })
   score: number;

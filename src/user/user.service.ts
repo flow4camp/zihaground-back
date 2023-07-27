@@ -289,4 +289,39 @@ export class UserService {
       where: { id: id },
     });
   }
+
+  async updateLine1(id: number, subwayNum1: number): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.subwayNum1 = subwayNum1;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+  async updateLine2(id: number, subwayNum2: number): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.subwayNum2 = subwayNum2;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
 }
