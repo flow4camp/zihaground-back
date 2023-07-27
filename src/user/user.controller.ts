@@ -14,6 +14,9 @@ import {
   UserRecordInput,
   UserLoginInput,
   UserEditInput,
+  UserNameInput,
+  UserGhostInput,
+  UserStation1Input,
 } from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -84,5 +87,31 @@ export class UserController {
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     return this.userService.delete(id);
+  }
+
+  // 유저네임, 유령이름 추가 및 삭제
+  @Put(':id/username')
+  async updateUsername(
+    @Param('id') id: number,
+    @Body() input: UserNameInput,
+  ): Promise<User> {
+    return this.userService.updateUsername(id, input.username);
+  }
+
+  @Put(':id/ghostname')
+  async updateGhostname(
+    @Param('id') id: number,
+    @Body() input: UserGhostInput,
+  ): Promise<User> {
+    return this.userService.updateGhostname(id, input.ghostname);
+  }
+
+  // 지하철역 이름, 노선이름 수정
+  @Put(':id/station1')
+  async updateStation1(
+    @Param('id') id: number,
+    @Body() input: UserStation1Input,
+  ): Promise<User> {
+    return this.userService.updateStation1(id, input.station1);
   }
 }

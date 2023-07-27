@@ -193,4 +193,59 @@ export class UserService {
       await this.userRepository.update(id, user);
     }
   }
+
+  // 유저네임, 유령이름 추가 및 삭제
+  async updateUsername(id: number, username: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.username = username;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async updateGhostname(id: number, ghostname: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.ghostname = ghostname;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+
+  async updateStation1(id: number, station1: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.station1 = station1;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
 }

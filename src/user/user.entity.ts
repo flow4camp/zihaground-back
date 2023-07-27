@@ -29,6 +29,11 @@ export class User {
   @Column({ nullable: false, type: 'varchar' })
   username: string;
 
+  //유령이름
+  @ApiProperty({ type: String, description: 'ghostname' })
+  @Column({ nullable: false, type: 'varchar', default: '유령이' })
+  ghostname: string;
+
   @ApiProperty({ type: String, description: 'password' })
   @Column({ nullable: false, type: 'varchar' })
   password: string;
@@ -98,4 +103,34 @@ export class User {
   @DeleteDateColumn({ type: 'timestamp' })
   @Column({ default: null, nullable: true })
   deletedAt: Date;
+
+  // 지하철 수정
+
+  @ApiProperty({ type: Number, description: 'subwayNum1' })
+  @Column({ nullable: true, type: 'integer', default: 3 })
+  subwayNum1: number;
+
+  @ApiProperty({ type: Number, description: 'subwayNum2' })
+  @Column({ nullable: true, type: 'integer', default: 4 })
+  subwayNum2: number;
+
+  @ApiProperty({ type: String, description: 'station1' })
+  @Column({ nullable: true, type: 'varchar', default: '대전역' })
+  station1: string;
+
+  @ApiProperty({ type: String, description: 'station2' })
+  @Column({ nullable: true, type: 'varchar', default: '대전역' })
+  station2: string;
+
+  @ApiProperty({ type: String, description: 'station3' })
+  @Column({ nullable: true, type: 'varchar', default: '대전역' })
+  station3: string;
+
+  @ApiProperty({ type: Date, description: 'firsttime' })
+  @Column({ type: 'timestamp', default: null, nullable: true })
+  firsttime: Date;
+
+  @ApiProperty({ type: Date, description: 'thirdtime' })
+  @Column({ type: 'timestamp', default: null, nullable: true })
+  thirdtime: Date;
 }
