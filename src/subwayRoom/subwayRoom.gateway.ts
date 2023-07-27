@@ -79,15 +79,21 @@ export class SubwayRoomGateway
     console.log(
       `[ ! disconnected ] userId :  ${userId}, clientiId : ${client.id}`,
     );
+    if (this.playingGames.get(Number(subwayId)) === undefined) {
+      return;
+    }
     this.playingUsers.delete(Number(userId));
     this.waitingUsers.delete(subwayId);
+    this.handleGameResultLose(Number(userId));
     this.playingGames.forEach((game, roomId) => {
       if (game.firSocket.id === client.id) {
+        this.handleGameResultWin(Number(game.secSocket.handshake.query.userId));
         game.secSocket.emit('game-win');
         game.secSocket.disconnect();
         this.playingGames.delete(roomId);
       }
       if (game.secSocket.id === client.id) {
+        this.handleGameResultWin(Number(game.firSocket.handshake.query.userId));
         game.firSocket.emit('game-win');
         game.firSocket.disconnect();
         this.playingGames.delete(roomId);
@@ -119,12 +125,12 @@ export class SubwayRoomGateway
           if (game.turn % 2 === 0) {
             game.firSocket.emit('game-match-win', select);
             game.secSocket.emit('game-match-lose', select);
-            game.secHp -= 10;
+            game.secHp -= 20;
           } else {
             // sec's turn
             game.firSocket.emit('game-match-lose', select);
             game.secSocket.emit('game-match-win', select);
-            game.firHp -= 10;
+            game.firHp -= 20;
           }
           //mismatch
         } else {
@@ -132,12 +138,12 @@ export class SubwayRoomGateway
           if (game.turn % 2 === 0) {
             game.firSocket.emit('game-mismatch-lose', game.secSelect);
             game.secSocket.emit('game-mismatch-win', select);
-            game.firHp -= 10;
+            game.firHp -= 20;
           } else {
             // sec's turn
             game.firSocket.emit('game-mismatch-win', game.secSelect);
             game.secSocket.emit('game-mismatch-lose', select);
-            game.secHp -= 10;
+            game.secHp -= 20;
           }
         }
         game.turn++;
@@ -155,12 +161,12 @@ export class SubwayRoomGateway
           if (game.turn % 2 === 0) {
             game.firSocket.emit('game-match-win', select);
             game.secSocket.emit('game-match-lose', select);
-            game.secHp -= 10;
+            game.secHp -= 20;
           } else {
             // sec's turn
             game.firSocket.emit('game-match-lose', select);
             game.secSocket.emit('game-match-win', select);
-            game.firHp -= 10;
+            game.firHp -= 20;
           }
           //mismatch
         } else {
@@ -168,12 +174,12 @@ export class SubwayRoomGateway
           if (game.turn % 2 === 0) {
             game.firSocket.emit('game-mismatch-lose', select);
             game.secSocket.emit('game-mismatch-win', game.firSelect);
-            game.firHp -= 10;
+            game.firHp -= 20;
           } else {
             // sec's turn
             game.firSocket.emit('game-mismatch-win', select);
             game.secSocket.emit('game-mismatch-lose', game.firSelect);
-            game.secHp -= 10;
+            game.secHp -= 20;
           }
         }
         game.turn++;
@@ -184,19 +190,32 @@ export class SubwayRoomGateway
     game.secSelect = null;
     console.log(`-- fir : ${game.firHp}, sec : ${game.secHp} ----`);
     if (game.firHp === 0) {
+      this.playingGames.delete(Number(subwayRoomId));
+      this.handleGameResultLose(Number(game.firSocket.handshake.query.userId));
+      this.handleGameResultWin(Number(game.secSocket.handshake.query.userId));
       game.firSocket.emit('game-over');
       game.secSocket.emit('game-win');
-      this.playingGames.delete(Number(subwayRoomId));
       game.firSocket.disconnect();
       game.secSocket.disconnect();
     }
     if (game.secHp === 0) {
+      this.playingGames.delete(Number(subwayRoomId));
+      this.handleGameResultWin(Number(game.firSocket.handshake.query.userId));
+      this.handleGameResultLose(Number(game.secSocket.handshake.query.userId));
       game.firSocket.emit('game-win');
       game.secSocket.emit('game-over');
-      this.playingGames.delete(Number(subwayRoomId));
       game.firSocket.disconnect();
       game.secSocket.disconnect();
     }
+  }
+
+  async handleGameResultWin(userId: number) {
+    console.log('win');
+    await this.userService.addRecord(userId, 1);
+  }
+  async handleGameResultLose(userId: number) {
+    console.log('lose');
+    await this.userService.addRecord(userId, -1);
   }
   //유저로부터 메세지를 받았을 때
   //   @SubscribeMessage('message')

@@ -78,7 +78,7 @@ export class UserController {
     @Param('id') id: number,
     @Body() userRecord: UserRecordInput,
   ): Promise<User> {
-    return this.userService.addRecord(id, userRecord.score, userRecord.power);
+    return this.userService.addRecord(id, userRecord.score);
   }
 
   @Delete(':id')

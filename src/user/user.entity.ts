@@ -42,7 +42,7 @@ export class User {
   subwayNum: number;
 
   @ApiProperty({ type: Number, description: 'power' })
-  @Column({ nullable: false, type: 'integer', default: 0 })
+  @Column({ nullable: false, type: 'integer', default: 1000 })
   power: number;
 
   @ApiProperty({ type: Number, description: 'win' })
