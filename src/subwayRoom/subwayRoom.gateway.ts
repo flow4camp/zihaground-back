@@ -29,8 +29,6 @@ export class SubwayRoomGateway
   }
   @WebSocketServer() server: Server;
 
-  // connectedUsers: Map<string, Socket> = new Map();
-  // subwayRoomUsers: Map<number, Socket[]> = new Map();
   waitingUsers: Map<string, Socket> = new Map();
   playingUsers: Map<number, Socket> = new Map();
   playingGames: Map<number, SubwayRoom> = new Map();
@@ -64,91 +62,38 @@ export class SubwayRoomGateway
         `[ Matching ]---- userId :  ${userId}, subwayId : ${subwayId}`,
       );
       this.playingGames.set(game.id, game);
-      waitingUser.emit('game-start', sec, game.id);
-      client.emit('game-start', fir, game.id);
+      this.waitingUsers.delete(subwayId);
+      waitingUser.emit('game-start', {
+        opp: sec,
+        gameId: game.id,
+        turn: true,
+      });
+      client.emit('game-start', { opp: fir, gameId: game.id, turn: false });
     }
   }
 
   //연결이 끊겼을 때
   async handleDisconnect(client: Socket) {
     const userId = client.handshake.query.userId as string;
+    const subwayId = client.handshake.query.subwayId as string;
     console.log(
       `[ ! disconnected ] userId :  ${userId}, clientiId : ${client.id}`,
     );
-    // //subwayRoom User 리스트에서 제거
-    // this.subwayRoomUsers.forEach((sockets, roomId) => {
-    //   const updatedSockets = sockets.filter(
-    //     (socket) => socket.id !== client.id,
-    //   );
-    //   if (updatedSockets.length === 0) {
-    //     this.subwayRoomUsers.delete(roomId);
-    //   } else {
-    //     //같은 방 유저에게 소켓 전송
-    //     updatedSockets.forEach((socket) => {
-    //       socket.emit('user-exited ', userId);
-    //     });
-    //     this.subwayRoomUsers.set(roomId, updatedSockets);
-    //   }
-    // });
-    // //connected 리스트에서 제거
-    // this.connectedUsers.delete(userId);
-    // this.server.emit('user-disconnected', userId);
+    this.playingUsers.delete(Number(userId));
+    this.waitingUsers.delete(subwayId);
+    this.playingGames.forEach((game, roomId) => {
+      if (game.firSocket.id === client.id) {
+        game.secSocket.emit('game-win');
+        game.secSocket.disconnect();
+        this.playingGames.delete(roomId);
+      }
+      if (game.secSocket.id === client.id) {
+        game.firSocket.emit('game-win');
+        game.firSocket.disconnect();
+        this.playingGames.delete(roomId);
+      }
+    });
   }
-
-  //------------------------[ Handle Subway Room ]-----------------------------
-
-  //유저가 방에 들어왔을 때
-  // @SubscribeMessage('enter-room')
-  // handleEnterRoom(client: Socket, chatRoomId: number) {
-  //   const userId = client.handshake.query.userId as string;
-  //   let isDuplicate = false;
-  //   if (!this.subwayRoomUsers.has(chatRoomId)) {
-  //     this.subwayRoomUsers.set(chatRoomId, []);
-  //   }
-  //   //중복 방지
-  //   const userSockets = this.subwayRoomUsers.get(chatRoomId);
-  //   userSockets.forEach((user) => {
-  //     if (user.id === client.id) {
-  //       isDuplicate = true;
-  //       return;
-  //     }
-  //   });
-  //   if (isDuplicate) {
-  //     return;
-  //   }
-  //   userSockets.push(client);
-  //   console.log(
-  //     `[ Enter ]--------- userId :  ${userId} entered the room no.${chatRoomId}`,
-  //   );
-  //   //같은 방 유저에게 소켓 전송
-  //   userSockets.forEach((user) => {
-  //     user.emit('user-entered', userId);
-  //   });
-  // }
-
-  //유저가 방에서 나갔을 때
-  // @SubscribeMessage('exit-room')
-  // handleExitRoom(client: Socket, chatRoomId: number) {
-  //   const userId = client.handshake.query.userId as string;
-  //   console.log(
-  //     `[ Exit ]--------- userId :  ${userId} exited the room no.${chatRoomId}`,
-  //   );
-  //   this.subwayRoomUsers.forEach((sockets, roomId) => {
-  //     const updatedSockets = sockets.filter(
-  //       (socket) => socket.id !== client.id,
-  //     );
-  //     if (updatedSockets.length === 0) {
-  //       this.subwayRoomUsers.delete(roomId);
-  //     } else {
-  //       //같은 방 유저에게 소켓 전송
-  //       console.log(updatedSockets.length);
-  //       updatedSockets.forEach((socket) => {
-  //         socket.emit('user-exited', userId);
-  //       });
-  //       this.subwayRoomUsers.set(roomId, updatedSockets);
-  //     }
-  //   });
-  // }
 
   @SubscribeMessage('game-select')
   handleGameSelect(client: Socket, data: any[]) {
@@ -158,12 +103,13 @@ export class SubwayRoomGateway
     const userId = client.handshake.query.userId as string;
     const subwayRoomId = data[0] as string;
     const select = data[1] as number;
+    // console.log(subwayRoomId);
     const game = this.playingGames.get(Number(subwayRoomId));
+    // console.log(game);
     if (userId === game.firSocket.handshake.query.userId) {
       //waiting
-      if (game.secSelect === null) {
+      if (game.secSelect === null || game.secSelect === undefined) {
         game.firSelect = select;
-        game.turn++;
         this.playingGames.set(Number(subwayRoomId), game);
         return;
       } else {
@@ -198,9 +144,8 @@ export class SubwayRoomGateway
         this.playingGames.set(Number(subwayRoomId), game);
       }
     } else {
-      if (game.firSelect === null) {
+      if (game.firSelect === null || game.firSelect === undefined) {
         game.secSelect = select;
-        game.turn++;
         this.playingGames.set(Number(subwayRoomId), game);
         return;
       } else {
@@ -235,15 +180,22 @@ export class SubwayRoomGateway
         this.playingGames.set(Number(subwayRoomId), game);
       }
     }
+    game.firSelect = null;
+    game.secSelect = null;
+    console.log(`-- fir : ${game.firHp}, sec : ${game.secHp} ----`);
     if (game.firHp === 0) {
       game.firSocket.emit('game-over');
       game.secSocket.emit('game-win');
       this.playingGames.delete(Number(subwayRoomId));
+      game.firSocket.disconnect();
+      game.secSocket.disconnect();
     }
     if (game.secHp === 0) {
       game.firSocket.emit('game-win');
       game.secSocket.emit('game-over');
       this.playingGames.delete(Number(subwayRoomId));
+      game.firSocket.disconnect();
+      game.secSocket.disconnect();
     }
   }
   //유저로부터 메세지를 받았을 때

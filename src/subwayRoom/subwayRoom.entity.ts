@@ -42,8 +42,8 @@ export class SubwayRoom {
   @Column({ nullable: false, type: 'integer', default: 0 })
   turn: number;
 
-  firSelect?: number;
-  secSelect?: number;
+  firSelect?: number = null;
+  secSelect?: number = null;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Column({ default: null, nullable: true })
