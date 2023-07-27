@@ -10,6 +10,7 @@ import {
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { SubwayRoom } from './subwayRoom.entity';
 import { SubwayRoomService } from './subwayRoom.service';
+import { SubwayRoomCreateInput } from './dto/subwayRoom.input';
 
 @Controller('subwayRoom')
 @ApiTags('SubwayRoom')
@@ -27,8 +28,8 @@ export class SubwayRoomController {
   }
 
   @Post()
-  @ApiBody({ type: SubwayRoom })
-  async create(@Body() SubwayRoom: SubwayRoom): Promise<SubwayRoom> {
+  @ApiBody({ type: SubwayRoomCreateInput })
+  async create(@Body() SubwayRoom: SubwayRoomCreateInput): Promise<SubwayRoom> {
     return this.subwayRoomService.create(SubwayRoom);
   }
 

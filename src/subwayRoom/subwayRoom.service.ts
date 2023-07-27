@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SubwayRoom } from './subwayRoom.entity';
+import { SubwayRoomCreateInput } from './dto/subwayRoom.input';
 
 @Injectable()
 export class SubwayRoomService {
@@ -32,7 +33,7 @@ export class SubwayRoomService {
     return answer;
   }
 
-  async create(subwayRoom: SubwayRoom): Promise<SubwayRoom> {
+  async create(subwayRoom: SubwayRoomCreateInput): Promise<SubwayRoom> {
     return await this.subwayRoomRepository.save({
       createdAt: new Date(),
       ...subwayRoom,

@@ -5,6 +5,7 @@ import { SubwayRoomController } from './subwayRoom.controller';
 import { SubwayRoom } from './subwayRoom.entity';
 import { SubwayRoomService } from './subwayRoom.service';
 import { SubwayRoomGateway } from './subwayRoom.gateway';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { SubwayRoomGateway } from './subwayRoom.gateway';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [SubwayRoomController],
-  providers: [SubwayRoomService, SubwayRoomGateway],
+  providers: [SubwayRoomService, SubwayRoomGateway, UserService],
 })
 export class SubwayRoomModule {}

@@ -158,7 +158,7 @@ export class UserService {
     });
   }
 
-  async addRecord(id: number, score: number, power: number): Promise<User> {
+  async addRecord(id: number, score: number): Promise<User> {
     try {
       const existUser = await this.userRepository.findOne({
         where: { id: id },
@@ -166,15 +166,21 @@ export class UserService {
       if (!existUser) {
         throw new Error('User not found');
       }
+      console.log('before', existUser.power);
       if (score === 1) {
         existUser.win += 1;
+        existUser.power += 300;
+        if (existUser.power < 0) {
+          existUser.power = 0;
+        }
       } else if (score === -1) {
         existUser.lose += 1;
+        existUser.power -= 150;
+        if (existUser.power < 0) {
+          existUser.power = 0;
+        }
       }
-      existUser.power += power * score;
-      if (existUser.power < 0) {
-        existUser.power = 0;
-      }
+      console.log('after', existUser.power);
       await this.userRepository.update(id, existUser);
     } catch (e) {
       console.log(e);
