@@ -59,6 +59,16 @@ export class UserStation1Input {
   station1: string;
 }
 
+export class UserStation2Input {
+  @ApiProperty({ type: String, description: '역이름 2' })
+  station2: string;
+}
+
+export class UserStation3Input {
+  @ApiProperty({ type: String, description: '역이름 3' })
+  station3: string;
+}
+
 export class UserRecordInput {
   @ApiProperty({ type: Number, description: '전적' })
   score: number;

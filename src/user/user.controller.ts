@@ -18,6 +18,8 @@ import {
   UserNameInput,
   UserGhostInput,
   UserStation1Input,
+  UserStation2Input,
+  UserStation3Input,
 } from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -114,5 +116,19 @@ export class UserController {
     @Body() input: UserStation1Input,
   ): Promise<User> {
     return this.userService.updateStation1(id, input.station1);
+  }
+  @Put(':id/station2')
+  async updateStation2(
+    @Param('id') id: number,
+    @Body() input: UserStation2Input,
+  ): Promise<User> {
+    return this.userService.updateStation2(id, input.station2);
+  }
+  @Put(':id/station3')
+  async updateStation3(
+    @Param('id') id: number,
+    @Body() input: UserStation3Input,
+  ): Promise<User> {
+    return this.userService.updateStation3(id, input.station3);
   }
 }

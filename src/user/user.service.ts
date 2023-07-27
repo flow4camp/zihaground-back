@@ -254,4 +254,39 @@ export class UserService {
       where: { id: id },
     });
   }
+
+  async updateStation2(id: number, station2: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.station2 = station2;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
+  async updateStation3(id: number, station3: string): Promise<User> {
+    try {
+      const existUser = await this.userRepository.findOne({
+        where: { id: id },
+      });
+      if (!existUser) {
+        throw new Error('User not found');
+      }
+      existUser.station3 = station3;
+      await this.userRepository.update(id, existUser);
+    } catch (e) {
+      console.log(e);
+    }
+    return await this.userRepository.findOne({
+      where: { id: id },
+    });
+  }
 }
