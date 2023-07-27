@@ -79,20 +79,20 @@ export class SubwayRoomGateway
     console.log(
       `[ ! disconnected ] userId :  ${userId}, clientiId : ${client.id}`,
     );
-    if (this.playingGames.get(Number(subwayId)) === undefined) {
-      return;
-    }
     this.playingUsers.delete(Number(userId));
     this.waitingUsers.delete(subwayId);
-    this.handleGameResultLose(Number(userId));
     this.playingGames.forEach((game, roomId) => {
       if (game.firSocket.id === client.id) {
+        console.log('remain user');
+        this.handleGameResultLose(Number(userId));
         this.handleGameResultWin(Number(game.secSocket.handshake.query.userId));
         game.secSocket.emit('game-win');
         game.secSocket.disconnect();
         this.playingGames.delete(roomId);
       }
       if (game.secSocket.id === client.id) {
+        console.log('remain user');
+        this.handleGameResultLose(Number(userId));
         this.handleGameResultWin(Number(game.firSocket.handshake.query.userId));
         game.firSocket.emit('game-win');
         game.firSocket.disconnect();
@@ -123,27 +123,27 @@ export class SubwayRoomGateway
         if (game.secSelect === select) {
           // fir's turn
           if (game.turn % 2 === 0) {
-            game.firSocket.emit('game-match-win', select);
-            game.secSocket.emit('game-match-lose', select);
             game.secHp -= 20;
+            game.firSocket.emit('game-match-win', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-match-lose', { select: select, myHp: game.secHp, oppHp: game.firHp });
           } else {
-            // sec's turn
-            game.firSocket.emit('game-match-lose', select);
-            game.secSocket.emit('game-match-win', select);
             game.firHp -= 20;
+            // sec's turn
+            game.firSocket.emit('game-match-lose', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-match-win', { select: select, myHp: game.secHp, oppHp: game.firHp });
           }
           //mismatch
         } else {
           // fir's turn
           if (game.turn % 2 === 0) {
-            game.firSocket.emit('game-mismatch-lose', game.secSelect);
-            game.secSocket.emit('game-mismatch-win', select);
             game.firHp -= 20;
+            game.firSocket.emit('game-mismatch-lose', { select: game.secSelect, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-mismatch-win', { select: select, myHp: game.secHp, oppHp: game.firHp });
           } else {
             // sec's turn
-            game.firSocket.emit('game-mismatch-win', game.secSelect);
-            game.secSocket.emit('game-mismatch-lose', select);
             game.secHp -= 20;
+            game.firSocket.emit('game-mismatch-win', { select: game.secSelect, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-mismatch-lose', { select: select, myHp: game.secHp, oppHp: game.firHp });
           }
         }
         game.turn++;
@@ -159,27 +159,27 @@ export class SubwayRoomGateway
         if (game.firSelect === select) {
           // fir's turn
           if (game.turn % 2 === 0) {
-            game.firSocket.emit('game-match-win', select);
-            game.secSocket.emit('game-match-lose', select);
             game.secHp -= 20;
+            game.firSocket.emit('game-match-win', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-match-lose', { select: select, myHp: game.secHp, oppHp: game.firHp });
           } else {
             // sec's turn
-            game.firSocket.emit('game-match-lose', select);
-            game.secSocket.emit('game-match-win', select);
             game.firHp -= 20;
+            game.firSocket.emit('game-match-lose', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-match-win', { select: select, myHp: game.secHp, oppHp: game.firHp });
           }
           //mismatch
         } else {
           // fir's turn
           if (game.turn % 2 === 0) {
-            game.firSocket.emit('game-mismatch-lose', select);
-            game.secSocket.emit('game-mismatch-win', game.firSelect);
             game.firHp -= 20;
+            game.firSocket.emit('game-mismatch-lose', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-mismatch-win', { select: game.firSelect, myHp: game.secHp, oppHp: game.firHp });
           } else {
             // sec's turn
-            game.firSocket.emit('game-mismatch-win', select);
-            game.secSocket.emit('game-mismatch-lose', game.firSelect);
             game.secHp -= 20;
+            game.firSocket.emit('game-mismatch-win', { select: select, myHp: game.firHp, oppHp: game.secHp });
+            game.secSocket.emit('game-mismatch-lose', { select: game.firSelect, myHp: game.secHp, oppHp: game.firHp });
           }
         }
         game.turn++;
