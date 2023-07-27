@@ -38,11 +38,25 @@ export class UserEditInput {
   shoeVariants: number;
 }
 
+export class UserNameInput {
+  @ApiProperty({ type: String, description: '유저 이름' })
+  username: string;
+}
+
+export class UserGhostInput {
+  @ApiProperty({ type: String, description: '유령 이름' })
+  ghostname: string;
+}
 export class UserLoginInput {
   @ApiProperty({ type: String, description: '이메일' })
   email: string;
   @ApiProperty({ type: String, description: '패스워드' })
   password: string;
+}
+
+export class UserStation1Input {
+  @ApiProperty({ type: String, description: '역이름 1' })
+  station1: string;
 }
 
 export class UserRecordInput {
