@@ -51,3 +51,7 @@ export class UserRecordInput {
   @ApiProperty({ type: Number, description: '파워' })
   power: number;
 }
+export class UserPowerInput {
+  @ApiProperty({ type: Number, description: '파워' })
+  power: number;
+}

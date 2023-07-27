@@ -14,6 +14,7 @@ import {
   UserRecordInput,
   UserLoginInput,
   UserEditInput,
+  UserPowerInput,
 } from './dto/user.input';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -64,12 +65,12 @@ export class UserController {
   }
 
   @Put('/add-power/:id')
-  @ApiBody({ type: Number })
+  @ApiBody({ type: UserPowerInput })
   async addPower(
     @Param('id') id: number,
-    @Body() power: number,
+    @Body() input: UserPowerInput,
   ): Promise<User> {
-    return this.userService.addPower(id, power);
+    return this.userService.addPower(id, input.power);
   }
 
   @Put('/add-record/:id')
